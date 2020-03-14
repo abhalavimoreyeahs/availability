@@ -9,8 +9,8 @@ const mongoose = require('mongoose');
 
 const Users = mongoose.model('Users');
 
-class checkJWT {
-    decryptApiKey = async (req, res, next) => {
+const checkJWT ={
+    decryptApiKey : async (req, res, next) => {
         try {
             const { authorization } = req.headers;
             console.log(authorization);
@@ -43,13 +43,13 @@ class checkJWT {
             req.currentUser = null;
             return next();
         }
-    };
+    },
 
-    makeSalt = function makeSalt() {
+    makeSalt : function makeSalt() {
         return Math.round((new Date().valueOf() * Math.random())) + ''; // eslint-disable-line
-    };
+    },
 
-    saltPassword = (password) => {
+    saltPassword : (password) => {
         if (!password) {
             return {
                 encrypt: '',
@@ -57,7 +57,7 @@ class checkJWT {
             };
         }
 
-        const salt = tools.makeSalt();
+        const salt = checkJWT.makeSalt();
 
         const encrypted = crypto
             .createHmac('sha1', salt)
@@ -65,9 +65,9 @@ class checkJWT {
             .digest('hex');
 
         return { encrypted, salt };
-    };
+    },
 
-    decryptPassword = (password, salt) => {
+    decryptPassword : (password, salt) => {
         if (!password || !salt) {
             return false;
         }
@@ -78,9 +78,9 @@ class checkJWT {
             .digest('hex');
 
         return decrypted;
-    };
+    },
 
-    getSystemTimezoneOffset = () => {
+    getSystemTimezoneOffset : () => {
         let timezoneOffset = 0;
         const tmpDate = new Date();
         const date = new Date(Date.UTC(tmpDate.getUTCFullYear(), tmpDate.getUTCMonth(), tmpDate.getUTCDate(), tmpDate.getUTCHours(), tmpDate.getUTCMinutes(), tmpDate.getUTCSeconds()));
@@ -91,13 +91,13 @@ class checkJWT {
             timezoneOffset = (offset * 60000);
         }
         return timezoneOffset;
-    };
+    },
 
-    userTimeStamp = (userTimezoneOffset) => {
+    userTimeStamp : (userTimezoneOffset) => {
         let servertimeoffset = new Date().getTimezoneOffset(); // ser offset
         var utc = Date.now() + (servertimeoffset * 60000); // 300 offset
         return (utc - ((60 * 1000) * parseInt(userTimezoneOffset)));
-    };
+    },
 
 };
 

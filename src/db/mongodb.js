@@ -13,3 +13,4 @@ mongoose.connect(database_URL, {useNewUrlParser: true, useUnifiedTopology: true}
 
 // schema registered here
 require('../model/users.model');
+require('../model/availability.model');

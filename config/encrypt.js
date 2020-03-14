@@ -3,5 +3,5 @@ module.exports = {
       hash: 'pocketcfohash',
       iv: 'pocketcfoiv',
     },
-    secret: process.env.secret
+    secret: process.env.secret || 'secretKey'
   };

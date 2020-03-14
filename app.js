@@ -12,7 +12,7 @@ const configureRoutesVersion1 = require('./src/versions/version1');
 
 app.engine('html', require('ejs').renderFile);
 app.get('/', (req, res)=>{
-    res.render('home.html');
+    res.render('home.html',{ title:'Add Availability'});
 })
 app.use(cors());
 app.options('*', cors());
@@ -26,9 +26,9 @@ app.use(multipart());
 app.use(bodyParser.json({extend: true, limit: '50mb'}));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
-app.use("/version/", configureRoutesVersion1())
+//app.use("/version/", configureRoutesVersion1(app));
+require('./src/versions/version1')(app);
 
-app.listen(port, (data)=>{
- if(data) console.log(`Server running on ...port:${port}`);
- else console.log('Unable to run server');
+app.listen(port, ()=>{
+ console.log(`Server running on ...port:${port}`);
 })

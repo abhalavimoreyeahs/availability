@@ -7,7 +7,7 @@ const UserSchema = new Schema(
         userId: {
             type: mongoose.Schema.Types.ObjectId,
         },
-        username: {
+        email: {
             type: String,
             required: true,
             trim: true,
@@ -31,18 +31,10 @@ const UserSchema = new Schema(
             type: Number,
             default: null
         },
-        emailHash: {
-            type: String
-        },
-
         salt: {
             type: String
         },
 
-        userType: {
-            type: Number,
-            required: true
-        },
     },
     {
         timestamps: true
