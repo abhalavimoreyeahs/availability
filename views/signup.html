@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login Page</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+
+    <div style="margin:0 auto ; width:50%; padding:20px">
+        <label>First Name</label>
+        <input type="text" name="firstName" id="firstName">
+        <br /> <br /> <br /> <br />
+        <label>Last Name</label>
+        <input type="text" name="lastName" id="lastName">
+        <br /> <br /> <br /> <br />
+        <label>email</label>
+        <input type="email" name="email" id="email">
+        <br /> <br /> <br /> <br />
+        <label>password</label>
+        <input type="password" name="password" id="password">
+        <br /> <br /> <br /> <br />
+        <button onclick="signup()">submit</button>
+        <button onclick="getAvailability()">getAvailability</button>
+
+    </div>
+</body>
+
+</html>
+
+<script>
+
+    function signup() {
+        debugger;
+        let firstName = document.getElementById('firstName').value;
+        let lastName = document.getElementById('lastName').value;
+        let email = document.getElementById('email').value;
+        let pass = document.getElementById('password').value;
+        let timeOffset = new Date().getTimezoneOffset();
+
+        const Http = new XMLHttpRequest();
+        const url = 'http://localhost:8081/version1/signup';
+        Http.open("POST", url);
+        Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        //Http.setRequestHeader('Authorization', localStorage.getItem('token')); 
+        Http.send(`firstname=${firstName}&lastname=${lastName}&email=${email}&password=${pass}&timezoneOffset=${timeOffset}`);
+
+        Http.onreadystatechange = function () {
+            debugger;
+            console.log(Http.responseText)
+            if (this.readyState == 4 && this.status == 200) {
+                let data = JSON.parse(Http.responseText)
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.userId);
+                window.location = "http://localhost:8081/addAvailability";
+            }
+        };
+
+    }
+
+    function AvailabilityPage() {
+
+        const Http = new XMLHttpRequest();
+        const url = 'http://localhost:8081/home';
+        Http.open("POST", url);
+        Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        Http.setRequestHeader('Authorization', localStorage.getItem('token'));
+
+        Http.onreadystatechange = function () {
+            debugger;
+            console.log(Http.responseText)
+            if (this.readyState == 4 && this.status == 200) {
+                debugger;
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userId', data.userId);
+                window.location = "http://localhost:8081/addAvailability";
+                //     let data = JSON.parse(Http.responseText)
+                //   localStorage.setItem('token',data.token);
+            }
+        };
+    }
+
+    function getAvailability() {
+        debugger;
+        let timeOffset = new Date().getTimezoneOffset();
+        let userId = localStorage.getItem('userId');
+        window.location = `http://localhost:8081/version1/getAvailability?userId=${userId}&timeOffset=${timeOffset}`;
+    }
+</script>

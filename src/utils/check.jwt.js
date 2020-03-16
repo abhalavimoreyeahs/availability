@@ -9,8 +9,8 @@ const mongoose = require('mongoose');
 
 const Users = mongoose.model('Users');
 
-const checkJWT ={
-    decryptApiKey : async (req, res, next) => {
+const checkJWT = {
+    decryptApiKey: async (req, res, next) => {
         try {
             const { authorization } = req.headers;
             console.log(authorization);
@@ -39,17 +39,17 @@ const checkJWT ={
 
             return next();
         } catch (e) {
-            console.error('decrypt API e:', e);
+            console.log('decrypt API e:', e);
             req.currentUser = null;
             return next();
         }
     },
 
-    makeSalt : function makeSalt() {
+    makeSalt: function makeSalt() {
         return Math.round((new Date().valueOf() * Math.random())) + ''; // eslint-disable-line
     },
 
-    saltPassword : (password) => {
+    saltPassword: (password) => {
         if (!password) {
             return {
                 encrypt: '',
@@ -67,7 +67,7 @@ const checkJWT ={
         return { encrypted, salt };
     },
 
-    decryptPassword : (password, salt) => {
+    decryptPassword: (password, salt) => {
         if (!password || !salt) {
             return false;
         }
@@ -80,7 +80,7 @@ const checkJWT ={
         return decrypted;
     },
 
-    getSystemTimezoneOffset : () => {
+    getSystemTimezoneOffset: () => {
         let timezoneOffset = 0;
         const tmpDate = new Date();
         const date = new Date(Date.UTC(tmpDate.getUTCFullYear(), tmpDate.getUTCMonth(), tmpDate.getUTCDate(), tmpDate.getUTCHours(), tmpDate.getUTCMinutes(), tmpDate.getUTCSeconds()));
@@ -92,10 +92,16 @@ const checkJWT ={
         }
         return timezoneOffset;
     },
-
-    userTimeStamp : (userTimezoneOffset) => {
+    // for current time
+    userTimeStamp: (userTimezoneOffset) => {
         let servertimeoffset = new Date().getTimezoneOffset(); // ser offset
         var utc = Date.now() + (servertimeoffset * 60000); // 300 offset
+        return (utc - ((60 * 1000) * parseInt(userTimezoneOffset)));
+    },
+    // for previous time
+    getuserTimeStamp: (timestamp, userTimezoneOffset) => {
+        let servertimeoffset = new Date(timestamp).getTimezoneOffset(); // ser offset
+        var utc = new Date(timestamp).getTime() + (servertimeoffset * 60000); // 300 offset
         return (utc - ((60 * 1000) * parseInt(userTimezoneOffset)));
     },
 

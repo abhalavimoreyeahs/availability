@@ -1,52 +1,25 @@
 <html>
-  <body >
-    <!-- onload="getAvailability();" -->
-    <table>
-        <tr>
-           <th>Start Time</th>
-           <th>End Time</th>
-           <!-- <th>Factory: rx</th> -->
-        </tr>
-     
-        <% for (var i = 0; i < result.length; i++) { %>
-         <tr>
-           <td><%= result[i].startTime %></td>
-           <td><%= result[i].endTime %></td>
-           <!-- <td><%= result[i].factory %></td> -->
-         </tr>    
-        <% } %>
-     </table>
-  </body>
-  <!-- <script language="javascript">
-    function updateDB() {
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", "database/update.html", true);
-      xhr.send(null);
-      /* ignore result */
-    }
-  </script> -->
+
+<body>
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+    </tr>
+
+    <% for (var i = 0; i < result.length; i++) { %>
+    <tr>
+      <td><%= result[i].date %></td>
+      <td><%= result[i].startTime %></td>
+      <td><%= result[i].endTime %></td>
+    </tr>
+    <% } %>
+  </table>
+</body>
+
 </html>
 
 <script>
-    
-    function getAvailability(){
-        debugger;
-    
-    const Http = new XMLHttpRequest();
-    const url='http://localhost:8081/version1/getAvailability';
-    Http.open("GET", url);
-    Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    Http.setRequestHeader('Authorization', localStorage.getItem('token')); 
-    Http.send();
-    
-    Http.onreadystatechange = function() {
-            debugger;
-      console.log(Http.responseText)
-        if (this.readyState == 4 && this.status == 200) {
-            let result = JSON.parse(Http.responseText)
-             
-        }
-      };
 
-    }
-    </script>
+</script>

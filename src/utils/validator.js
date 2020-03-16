@@ -1,6 +1,6 @@
 var mongodb = require("mongodb")
 
- const Validator = {
+const Validator = {
 
     isValid(data) {
         if (!data || data == undefined || data == null || data == "") {
@@ -9,8 +9,8 @@ var mongodb = require("mongodb")
         return true;
     },
     isValidId(id) {
-         
-        if(mongodb.ObjectID.isValid(id) && isNaN(id)) return true;
+
+        if (mongodb.ObjectID.isValid(id) && isNaN(id)) return true;
         return false;
     },
     isValidString(str, len) {

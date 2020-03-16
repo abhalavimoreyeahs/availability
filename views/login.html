@@ -1,83 +1,73 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-   <title>Login Page</title>
-   <link rel='stylesheet' href='/stylesheets/style.css' />
+  <title>Login Page</title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
 </head>
+
 <body>
 
-<div style="margin:0 auto ; width:50%; padding:20px">
- 
-  <label>email</label>
-  <input type="email" name="email" id="email">
+  <div style="margin:0 auto ; width:50%; padding:20px">
+
+    <label>email</label>
+    <input type="email" name="email" id="email">
     <br /> <br /> <br /> <br />
-  <label>password</label>
-  <input type="password" name="password" id="password">
+    <label>password</label>
+    <input type="password" name="password" id="password">
     <br /> <br /> <br /> <br />
-  <button onclick="httpRequest()">submit</button>
-  
+    <button onclick="httpRequest()">submit</button>
+    <button onclick="getAvailability()">getAvailability</button>
   </div>
 </body>
+
 </html>
 
 <script>
-// function httpGet()
-// {
-//     let email= document.getElementById('email');
-//     let pass = document.getElementById('password');
-//     var xmlHttp = new XMLHttpRequest();
-//     xmlHttp.open( "POST", 'http://localhost:8081/version1/login', false ); // false for synchronous request
-//     xmlHttp.send( null );
-//     return xmlHttp.responseText;
-// }
-function httpRequest(){
+  // function httpGet()
+  // {
+  //     let email= document.getElementById('email');
+  //     let pass = document.getElementById('password');
+  //     var xmlHttp = new XMLHttpRequest();
+  //     xmlHttp.open( "POST", 'http://localhost:8081/version1/login', false ); // false for synchronous request
+  //     xmlHttp.send( null );
+  //     return xmlHttp.responseText;
+  // }
+  function httpRequest() {
     debugger;
-         let email= document.getElementById('email').value;
+    let email = document.getElementById('email').value;
     let pass = document.getElementById('password').value;
-    let data = { email: email, password: pass};
+    let data = { email: email, password: pass };
 
-const Http = new XMLHttpRequest();
-const url='http://localhost:8081/version1/login';
-Http.open("POST", url);
-Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-//Http.setRequestHeader('Authorization', localStorage.getItem('token')); 
-Http.send(`email=${email}&password=${pass}`);
+    const Http = new XMLHttpRequest();
+    const url = 'http://localhost:8081/version1/login';
+    Http.open("POST", url);
+    Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    //Http.setRequestHeader('Authorization', localStorage.getItem('token')); 
+    Http.send(`email=${email}&password=${pass}`);
 
-Http.onreadystatechange = function() {
-        debugger;
-  console.log(Http.responseText)
-    if (this.readyState == 4 && this.status == 200) {
+    Http.onreadystatechange = function () {
+      debugger;
+      console.log(Http.responseText)
+      if (this.readyState == 4 && this.status == 200) {
         let data = JSON.parse(Http.responseText)
-      localStorage.setItem('token',data.token);
-      localStorage.setItem('userId',data.userId);
-      window.location = "http://localhost:8081/home";
-      //AvailabilityPage();
-    }
-  };
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userId', data.userId);
+        window.location = "http://localhost:8081/addAvailability";
+      }
+    };
 
-// Http.onreadystatechange = (e) => {
-//     debugger;
-//   console.log(Http.responseText)
-//   if(Http.status = 200)
-// }
-}
+    // Http.onreadystatechange = (e) => {
+    //     debugger;
+    //   console.log(Http.responseText)
+    //   if(Http.status = 200)
+    // }
+  }
 
-function AvailabilityPage(){
-    
-const Http = new XMLHttpRequest();
-const url='http://localhost:8081/home';
-Http.open("POST", url);
-Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-Http.setRequestHeader('Authorization', localStorage.getItem('token')); 
 
-Http.onreadystatechange = function() {
-        debugger;
-  console.log(Http.responseText)
-    if (this.readyState == 4 && this.status == 200) {
-        debugger;
-    //     let data = JSON.parse(Http.responseText)
-    //   localStorage.setItem('token',data.token);
-    }
-  };
-}
+  function getAvailability() {
+    let timeOffset = new Date().getTimezoneOffset();
+    let userId = localStorage.getItem('userId');
+    window.location = `http://localhost:8081/version1/getAvailability?userId=${userId}&timeOffset=${timeOffset}`;
+  }
 </script>
