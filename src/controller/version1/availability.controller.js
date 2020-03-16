@@ -30,7 +30,7 @@ const AvailabilityController = {
             let availability = new Availability();
             availability.startTime = parseInt(startTime);
             availability.endTime = parseInt(endTime);
-            availability.userId = req.body.userId;
+            availability.userId = req.currentUser.userId; //req.body.userId;
             
             let saveAvailability = await availability.save();
             if(saveAvailability){
@@ -56,6 +56,14 @@ const AvailabilityController = {
              startTime: new Date(doc.startTime).toLocaleTimeString(),
              endTime: new Date(doc.endTime).toLocaleTimeString(),
          }))});
+
+        // return res.status(200).render('getAvailability.html',{
+        //     result: result.map((doc)=>({
+        //         startTime: new Date(doc.startTime).toLocaleTimeString(),
+        //         endTime: new Date(doc.endTime).toLocaleTimeString(),
+        //     }))
+        // })
+      
 
         }catch(error){
             console.error('error:',error);

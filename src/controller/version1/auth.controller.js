@@ -151,8 +151,10 @@ const AuthController = {
             return res.status(200).json({
                 success: true,
                 token,
-                //user: findUser,
+                userId: findUser.id,
             });
+
+           // return res.redirect('/home');
         }
         catch (error) {
             console.error('login error:', error);

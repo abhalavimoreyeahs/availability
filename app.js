@@ -9,10 +9,21 @@ const cors = require('cors');
 const multipart = require('connect-multiparty');
 require('./src/db/mongodb'); // Mongo db connection
 const configureRoutesVersion1 = require('./src/versions/version1');
+const checkJwt = require('./src/utils/check.jwt');
 
 app.engine('html', require('ejs').renderFile);
 app.get('/', (req, res)=>{
-    res.render('home.html',{ title:'Add Availability'});
+    res.render('login.html',{ title:'login page'});
+})
+
+app.get('/home', (req, res)=>{  //, [checkJwt.decryptApiKey]
+    // if(req.currentUser){
+       return  res.render('home.html',{ title:'Add Availability'});
+    // }
+   // return res.status(400).json({success: false, message:'Invalid Access'});
+})
+app.get('/getAvailability', (req, res)=>{
+    res.render('getAvailability.html',{ title:'Get Availability',result:[{startTime:'1', endTime:'2'}]});
 })
 app.use(cors());
 app.options('*', cors());

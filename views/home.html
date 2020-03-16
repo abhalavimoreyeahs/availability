@@ -7,15 +7,44 @@
 <body>
 
 <div style="margin:0 auto ; width:50%; padding:20px">
-  <form action="/version1/addAvailability" method="post">
-  <label>Name</label>
-  <input type="text" name="name">
+
+  <label>Start Tme</label>
+  <input type="datetime-local" name="startTime" id="startTime">
     <br /> <br /> <br /> <br />
-  <label>Email</label>
-  <input type="text" name="email">
+  <label>End Time</label>
+  <input type="datetime-local" name="endTime" id="endTime">
     <br /> <br /> <br /> <br />
-  <button>submit</button>
-    </form>
+  <button onclick="addAvailability()">submit</button>
+
   </div>
 </body>
 </html>
+
+<script>
+    
+    function addAvailability(){
+        debugger;
+             let startTime= new Date(document.getElementById('startTime').value).getTime();
+        let endTime = new Date(document.getElementById('endTime').value).getTime();
+    
+    const Http = new XMLHttpRequest();
+    const url='http://localhost:8081/version1/addAvailability';
+    Http.open("POST", url);
+    Http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    Http.setRequestHeader('Authorization', localStorage.getItem('token')); 
+    Http.send(`startTime=${startTime}&endTime=${endTime}`);
+    
+    Http.onreadystatechange = function() {
+            debugger;
+      console.log(Http.responseText)
+        if (this.readyState == 4 && this.status == 200) {
+            let data = JSON.parse(Http.responseText)
+           let userId = localStorage.getItem('userId')
+          // window.location = "http://localhost:8081/getAvailability"; 
+            window.location = "http://localhost:8081/getAvailability?userId="+userId;
+          //localStorage.setItem('token',data.token);
+        }
+      };
+
+    }
+    </script>
