@@ -6,7 +6,7 @@ const AvailabilitySchema = new Schema(
     {
 
         userId: {
-            type:  mongoose.Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Users',
             required: true,
         },

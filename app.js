@@ -13,12 +13,15 @@ const checkJwt = require('./src/utils/check.jwt');
 
 app.engine('html', require('ejs').renderFile);
 app.get('/', (req, res)=>{
+    res.render('signup.html',{ title:'login page'});
+})
+app.get('/login', (req, res)=>{
     res.render('login.html',{ title:'login page'});
 })
 
-app.get('/home', (req, res)=>{  //, [checkJwt.decryptApiKey]
+app.get('/addAvailability', (req, res)=>{  //, [checkJwt.decryptApiKey]
     // if(req.currentUser){
-       return  res.render('home.html',{ title:'Add Availability'});
+       return  res.render('addAvailability.html',{ title:'Add Availability'});
     // }
    // return res.status(400).json({success: false, message:'Invalid Access'});
 })

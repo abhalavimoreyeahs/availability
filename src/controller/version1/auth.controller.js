@@ -8,12 +8,12 @@ const mongoose = require('mongoose');
 
 const Users = mongoose.model('Users');
 const validator = require('../../utils/validator');
-const Error =  require('../../custom/ErrorHandler');
+const Error = require('../../custom/ErrorHandler');
 const AuthController = {
 
-    signup : async (req, res) => {
+    signup: async (req, res) => {
         try {
-            let { firstname, lastname, email,  password ,timezoneOffset} = req.body;
+            let { firstname, lastname, email, password, timezoneOffset } = req.body;
 
             console.log(req.body);
 
@@ -32,11 +32,14 @@ const AuthController = {
             if (!lastname || !validator.isValidString(lastname)) {
                 AddErrors.addRequestError('Invalid lastname.');
             }
-
-            if (AddErrors.isErrors()) {
-               // logger.error(`${"invalid Parameters"} ${req.originalUrl}`);
-                return res.status(paramErrors.code).json({ success: false, error: AddErrors, message: "Invalid Parameters" });
+            if (!timezoneOffset) {
+                timezoneOffset = new Date().getTimezoneOffset();
             }
+            if (AddErrors.isErrors()) {
+                // logger.error(`${"invalid Parameters"} ${req.originalUrl}`);
+                return res.status(400).json({ success: false, error: AddErrors, message: "Invalid Parameters" });
+            }
+
 
             email = email.toLowerCase();
             firstname = firstname.toLowerCase();
@@ -46,21 +49,22 @@ const AuthController = {
             const findUser = await Users.findOne({ 'email': emailRegex });
 
             if (findUser && findUser._id && findUser.email) {
-                return res.status(400).json({ success: false, message: 'Email is already registered.'});
+                return res.status(400).json({ success: false, message: 'Email is already registered.' });
             }
 
             // Convert pass to hash & salt
             const { encrypted, salt } = await checkJWT.saltPassword(password);
-          
-            if(timezoneOffset){
-               timezoneOffset = parseInt(timezoneOffset);
+
+            if (timezoneOffset) {
+                timezoneOffset = parseInt(timezoneOffset);
             }
             const newUser = new Users();
             newUser.firstname = firstname;
             newUser.lastname = lastname;
             newUser.email = email;
+            newUser.timezoneOffset = timezoneOffset;
             newUser.password = encrypted;
-            newUser.salt =  salt;
+            newUser.salt = salt;
             newUser.userId = ObjectId();
             let saveUser = await newUser.save();
             console.log(saveUser)
@@ -85,14 +89,15 @@ const AuthController = {
                 success: true,
                 message: "success",
                 token,
-                user: saveUser,
+                userId: saveUser.userId,
+                //user: saveUser,
                 newUser: true
             });
 
         } catch (error) {
-            console.error('signup error:', error);
-            logger.error(`${error} ${req.originalUrl}`);
-            res.status(Server_Error).json({ success: false, error: error });
+            console.log('signup error:', error);
+
+            res.status(500).json({ success: false, error: error });
         }
     },
 
@@ -119,7 +124,7 @@ const AuthController = {
 
             // Check if valid user returned, return error if needed
             if (!findUser || !findUser.id) {
-                return res.status(Bad_Request).json({ success: false, message: "Invalid username/password."});
+                return res.status(Bad_Request).json({ success: false, message: "Invalid username/password." });
             }
 
             // HASH and SALT password, compare to database password
@@ -136,7 +141,7 @@ const AuthController = {
                     company: findUser.company,
                     firstName: findUser.firstName,
                     lastName: findUser.lastName,
-                   
+
                 },
                 encryptConfig.secret,
                 { expiresIn: "100d" }
@@ -151,14 +156,14 @@ const AuthController = {
             return res.status(200).json({
                 success: true,
                 token,
-                userId: findUser.id,
+                userId: findUser.userId,
             });
 
-           // return res.redirect('/home');
+            // return res.redirect('/home');
         }
         catch (error) {
-            console.error('login error:', error);
-           return res.status(500).json({ success: false, error: error });
+            console.log('login error:', error);
+            return res.status(500).json({ success: false, error: error });
         }
     },
 }
